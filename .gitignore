@@ -1,3 +1,8 @@
 build/
 log/
 install/
+.idea/vcs.xml
+.idea/modules.xml
+.idea/lh_demo_commander.iml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/inspectionProfiles/profiles_settings.xml

@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'commander = lh_demo_commander.commander:main'
+            'commander = lh_demo_commander.commander:main',
+            "keypoint_estimator = lh_demo_commander.keypoint_estimator:main",
         ],
     },
 )
