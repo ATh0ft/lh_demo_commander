@@ -13,6 +13,9 @@ class KeypointEstimator(Node):
 
         self.keypoints = range(3)
         self.keypoints_coordinates = np.zeros([len(self.keypoints), 2])
+        # TEST - DELETE THIS
+        self.keypoints_coordinates[0, :] = np.array([10, 10])
+        # END TEST
         self.keypoints_distances = [0 for _ in range(len(self.keypoints))]
         self.keypoints_time_estimates = [0 for _ in range(len(self.keypoints))]
 
@@ -20,13 +23,13 @@ class KeypointEstimator(Node):
         self.keypoints_passed = 0
 
         self.last_coordinate = [0, 0]
-        self.last_time = self.get_clock().now().nanoseconds*1000000000
+        self.last_time = self.get_clock().now().nanoseconds/1000000000
 
         self.create_subscription(PoseWithCovarianceStamped, "/amcl_pose", self.updateDistanceToKeypoints, 1)
         self.statekeyPublisher = self.create_publisher(Statekey, "/statekey", 1)
 
     def updateDistanceToKeypoints(self, msg):
-        time = self.get_clock().now().nanoseconds*1000000000
+        time = self.get_clock().now().nanoseconds/1000000000
         coordinate = [0, 0]
         coordinate[0] = msg.pose.pose.position.x
         coordinate[1] = msg.pose.pose.position.y
@@ -51,7 +54,7 @@ class KeypointEstimator(Node):
         new_msg = Statekey()
         new_msg.active = True
         new_msg.upcoming_keypoints = self.keypoints[self.keypoints_passed:len(self.keypoints)]
-        self.get_logger().info(f"Speed {self.speed} - Type: {type(self.speed)}")
+        self.get_logger().info(f"Speed {speed} - Type: {type(speed)} - Time: {time}")
         new_msg.time_to_keypoints = self.keypoints_time_estimates[self.keypoints_passed:len(self.keypoints)]
         self.statekeyPublisher.publish(new_msg)
 
