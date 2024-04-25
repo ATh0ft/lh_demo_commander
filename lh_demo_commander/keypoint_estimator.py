@@ -11,11 +11,16 @@ class KeypointEstimator(Node):
     def __init__(self):
         super().__init__('keypoint_estimator')
 
-        self.keypoints = range(3)
+        self.declare_parameter('keypoints', rclpy.Parameter.Type.DOUBLE_ARRAY)
+        self.keypoints_coordinates_raw = self.get_parameter('keypoints').value
+
+        self.keypoints = range(len(self.keypoints_coordinates_raw)//2)
         self.keypoints_coordinates = np.zeros([len(self.keypoints), 2])
-        # TEST - DELETE THIS
-        self.keypoints_coordinates[0, :] = np.array([10, 10])
-        # END TEST
+        for i in range(len(self.keypoints)):
+            self.keypoints_coordinates[i, 0] = self.keypoints_coordinates_raw[i*2]
+            self.keypoints_coordinates[i, 1] = self.keypoints_coordinates_raw[(i * 2 + 1)]
+        self.get_logger().info(f"Keypoints coordinates: {self.keypoints_coordinates}")
+
         self.keypoints_distances = [0 for _ in range(len(self.keypoints))]
         self.keypoints_time_estimates = [0 for _ in range(len(self.keypoints))]
 
