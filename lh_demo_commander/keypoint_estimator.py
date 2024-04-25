@@ -39,7 +39,10 @@ class KeypointEstimator(Node):
             self.keypoints_distances[i] = np.sqrt((coordinate[0] - self.keypoints_coordinates[i, 0])**2 + (coordinate[1] - self.keypoints_coordinates[i, 1])**2)
 
         # Calculate current speed
-        speed = np.sqrt((coordinate[0] - self.last_coordinate[0])**2 + (coordinate[1] - self.last_coordinate[1])**2)/(time - self.last_time)
+        speed_x = (coordinate[0] - self.last_coordinate[0])/(time - self.last_time)
+        speed_y = (coordinate[1] - self.last_coordinate[1])/(time - self.last_time)
+        self.get_logger().info(f"Coordinate: {coordinate} - Last Coordinate: {self.last_coordinate}")
+        speed = np.sqrt(speed_x**2 + speed_y**2)
         self.last_time = time
 
         # Estimate time to keypoints
@@ -49,6 +52,8 @@ class KeypointEstimator(Node):
         # Check if a keypoint is passed
         if self.keypoints_distances[self.keypoints_passed] < self.keypoint_margin:
             self.keypoints_passed += 1
+
+        self.last_coordinate = [coordinate[0], coordinate[1]]
 
         # Publish the correct amount of keypoints are their time estimates
         new_msg = Statekey()
