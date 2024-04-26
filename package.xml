@@ -7,12 +7,11 @@
   <maintainer email="alfchr21@student.aau.dk">a</maintainer>
   <license>TODO: License declaration</license>
 
-  <depend>nav2_simple_commande</depend>
+  <depend>nav2_simple_commander</depend>
   <depend>lh_interfaces</depend>
   <depend>geometry_msgs</depend>
-  <depend>nav2_amc</depend>
-  <depend>python-numpy</depend>
-
+  <depend>nav2_amcl</depend>
+  
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
