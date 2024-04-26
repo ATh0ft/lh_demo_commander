@@ -7,7 +7,7 @@
   <maintainer email="alfchr21@student.aau.dk">a</maintainer>
   <license>TODO: License declaration</license>
 
-  <depend>nav2_simple_commande</depend>
+  <depend>nav2_simple_commander</depend>
   <depend>lh_interfaces</depend>
   <depend>geometry_msgs</depend>
   <depend>nav2_amcl</depend>
