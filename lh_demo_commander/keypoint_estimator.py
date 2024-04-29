@@ -29,6 +29,7 @@ class KeypointEstimator(Node):
 
         self.last_coordinate = [0, 0]
         self.last_time = self.get_clock().now().nanoseconds/1000000000
+        self.last_speed = 0
 
         self.create_subscription(PoseWithCovarianceStamped, "/amcl_pose", self.updateDistanceToKeypoints, 1)
         self.statekeyPublisher = self.create_publisher(Statekey, "/statekey", 1)
@@ -48,17 +49,19 @@ class KeypointEstimator(Node):
         speed_y = (coordinate[1] - self.last_coordinate[1])/(time - self.last_time)
         self.get_logger().info(f"Coordinate: {coordinate} - Last Coordinate: {self.last_coordinate}")
         speed = np.sqrt(speed_x**2 + speed_y**2)
+        smoothed_speed = (speed+self.last_speed)/2
         self.last_time = time
 
         # Estimate time to keypoints
         for i in range(len(self.keypoints)):
-            self.keypoints_time_estimates[i] = self.keypoints_distances[i]/speed
+            self.keypoints_time_estimates[i] = self.keypoints_distances[i]/smoothed_speed
 
         # Check if a keypoint is passed
         if self.keypoints_distances[self.keypoints_passed] < self.keypoint_margin:
             self.keypoints_passed += 1
 
         self.last_coordinate = [coordinate[0], coordinate[1]]
+        self.last_speed = speed
 
         # Publish the correct amount of keypoints are their time estimates
         new_msg = Statekey()
