@@ -35,41 +35,49 @@ class KeypointEstimator(Node):
         self.statekeyPublisher = self.create_publisher(Statekey, "/statekey", 1)
 
     def updateDistanceToKeypoints(self, msg):
-        time = self.get_clock().now().nanoseconds/1000000000
-        coordinate = [0, 0]
-        coordinate[0] = msg.pose.pose.position.x
-        coordinate[1] = msg.pose.pose.position.y
+        if(self.keypoints_passed < len(self.keypoints)):
+            time = self.get_clock().now().nanoseconds/1000000000
+            coordinate = [0, 0]
+            coordinate[0] = msg.pose.pose.position.x
+            coordinate[1] = msg.pose.pose.position.y
 
-        # Calculate distance to all keypoints
-        for i in range(len(self.keypoints)):
-            self.keypoints_distances[i] = np.sqrt((coordinate[0] - self.keypoints_coordinates[i, 0])**2 + (coordinate[1] - self.keypoints_coordinates[i, 1])**2)
+            # Calculate distance to all keypoints
+            for i in range(len(self.keypoints)):
+                self.keypoints_distances[i] = np.sqrt((coordinate[0] - self.keypoints_coordinates[i, 0])**2 + (coordinate[1] - self.keypoints_coordinates[i, 1])**2)
 
-        # Calculate current speed
-        speed_x = (coordinate[0] - self.last_coordinate[0])/(time - self.last_time)
-        speed_y = (coordinate[1] - self.last_coordinate[1])/(time - self.last_time)
-        self.get_logger().info(f"Coordinate: {coordinate} - Last Coordinate: {self.last_coordinate}")
-        speed = np.sqrt(speed_x**2 + speed_y**2)
-        smoothed_speed = (speed+self.last_speed)/2
-        self.last_time = time
+            # Calculate current speed
+            speed_x = (coordinate[0] - self.last_coordinate[0])/(time - self.last_time)
+            speed_y = (coordinate[1] - self.last_coordinate[1])/(time - self.last_time)
+            self.get_logger().info(f"Coordinate: {coordinate} - Last Coordinate: {self.last_coordinate}")
+            speed = np.sqrt(speed_x**2 + speed_y**2)
+            smoothed_speed = (speed+self.last_speed)/2
+            self.last_time = time
 
-        # Estimate time to keypoints
-        for i in range(len(self.keypoints)):
-            self.keypoints_time_estimates[i] = self.keypoints_distances[i]/smoothed_speed
+            # Estimate time to keypoints
+            for i in range(len(self.keypoints)):
+                self.keypoints_time_estimates[i] = self.keypoints_distances[i]/smoothed_speed
 
-        # Check if a keypoint is passed
-        if self.keypoints_distances[self.keypoints_passed] < self.keypoint_margin:
-            self.keypoints_passed += 1
+            # Check if a keypoint is passed
+            if self.keypoints_distances[self.keypoints_passed] < self.keypoint_margin:
+                self.keypoints_passed += 1
 
-        self.last_coordinate = [coordinate[0], coordinate[1]]
-        self.last_speed = speed
+            self.last_coordinate = [coordinate[0], coordinate[1]]
+            self.last_speed = speed
 
-        # Publish the correct amount of keypoints are their time estimates
-        new_msg = Statekey()
-        new_msg.active = True
-        new_msg.upcoming_keypoints = self.keypoints[self.keypoints_passed:len(self.keypoints)]
-        self.get_logger().info(f"Speed {speed} - Type: {type(speed)} - Time: {time}")
-        new_msg.time_to_keypoints = self.keypoints_time_estimates[self.keypoints_passed:len(self.keypoints)]
-        self.statekeyPublisher.publish(new_msg)
+            # Publish the correct amount of keypoints are their time estimates
+            new_msg = Statekey()
+            new_msg.active = True
+            new_msg.upcoming_keypoints = self.keypoints[self.keypoints_passed:len(self.keypoints)]
+            #self.get_logger().info(f"Speed {speed} - Type: {type(speed)} - Time: {time}")
+            new_msg.time_to_keypoints = self.keypoints_time_estimates[self.keypoints_passed:len(self.keypoints)]
+            self.statekeyPublisher.publish(new_msg)
+        else:
+            # If all keypoints are reached, set active to false
+            new_msg = Statekey()
+            new_msg.active = False
+            new_msg.upcoming_keypoints = [0]
+            new_msg.time_to_keypoints = [0]
+            self.statekeyPublisher.publish(new_msg)
 
 def main(args: list = None) -> None:
     rclpy.init(args=args)
