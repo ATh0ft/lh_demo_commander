@@ -11,6 +11,8 @@
   <depend>lh_interfaces</depend>
   <depend>geometry_msgs</depend>
   <depend>nav2_amcl</depend>
+  <depend>python3-tqdm</depend>
+  <depend>python3-numpy</depend>
   
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
