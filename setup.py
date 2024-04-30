@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
             'commander = lh_demo_commander.commander:main',
             "keypoint_estimator = lh_demo_commander.keypoint_estimator:main",
+            "emulate_keypoints = lh_demo_commander.emulate_keypoints:main",
             "keypoint_subscriber = lh_demo_commander.keypoint_subscriber:main",
         ],
     },

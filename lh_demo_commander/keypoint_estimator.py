@@ -58,7 +58,7 @@ class KeypointEstimator(Node):
                 self.keypoints_time_estimates[i] = self.keypoints_distances[i]/smoothed_speed
 
             # Check if a keypoint is passed
-            if self.keypoints_distances[self.keypoints_passed] < self.keypoint_margin:
+        if self.keypoints_distances[self.keypoints_passed] < self.keypoint_margin:
                 self.keypoints_passed += 1
 
             self.last_coordinate = [coordinate[0], coordinate[1]]
@@ -76,7 +76,7 @@ class KeypointEstimator(Node):
             new_msg = Statekey()
             new_msg.active = False
             new_msg.upcoming_keypoints = [0]
-            new_msg.time_to_keypoints = [0]
+            new_msg.time_to_keypoints = [0.0]
             self.statekeyPublisher.publish(new_msg)
 
 def main(args: list = None) -> None:
