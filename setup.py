@@ -27,6 +27,7 @@ setup(
             "keypoint_estimator = lh_demo_commander.keypoint_estimator:main",
             "emulate_keypoints = lh_demo_commander.emulate_keypoints:main",
             "keypoint_subscriber = lh_demo_commander.keypoint_subscriber:main",
+            "amcl_pose_emulator = lh_demo_commander.amcl_pose_emulator:main",
         ],
     },
 )
