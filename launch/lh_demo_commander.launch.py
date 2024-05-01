@@ -5,10 +5,10 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Pass keypoints as pairs of x and y coordinates
-    coordinates_param = DeclareLaunchArgument("keypoints", default_value="[-1.7671095660857,-0.329028381597]")
+    coordinates_param = DeclareLaunchArgument("keypoints", default_value="[0.824, 2.183]")
     # coordinates_param = DeclareLaunchArgument("keypoints", default_value="[0.0, 0.0]")
-    initial_pose_param = DeclareLaunchArgument("initial_pose", default_value="[-3.505,  -2.206, 0.31073, 0.95048]") # x, y, rz, rw
-    goal_pose_param = DeclareLaunchArgument("goal_pose", default_value="[ -0.625, 0.89,  0.31073, 0.95048]")
+    initial_pose_param = DeclareLaunchArgument("initial_pose", default_value="[3.477,  3.365, -0.98, 0.19]") # x, y, rz, rw
+    goal_pose_param = DeclareLaunchArgument("goal_pose", default_value="[ -1.058, 1.509,  -0.98, 0.16]")
     # initial_pose_param = DeclareLaunchArgument("initial_pose", default_value="[3.0,  0.0, 0.0, 1.0]") # x, y, rz, rw
        
     # goal_pose_param = DeclareLaunchArgument("goal_pose", default_value="[-3.0, 0.0, 0.0, 1.0]")
